@@ -72,7 +72,7 @@ orientation = landscape
 fullscreen = 1
 
 # (list) Permissions
-#android.permissions = INTERNET
+android.permissions = INTERNET,CAMERA
 
 # (int) Android API to use
 android.api = 19
@@ -81,7 +81,7 @@ android.api = 19
 android.minapi = 19
 
 # (int) Android SDK version to use
-android.sdk = 21
+android.sdk = 20
 
 # (str) Android NDK version to use
 android.ndk = 9c
