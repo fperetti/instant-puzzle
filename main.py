@@ -9,7 +9,6 @@ unscrambled camera feed or double click to scramble the grid
 again.
 '''
 
-
 from kivy.app import App
 from kivy.uix.camera import Camera
 from kivy.uix.widget import Widget
@@ -20,6 +19,9 @@ from kivy.graphics import Color, Rectangle
 from kivy.properties import NumericProperty
 from random import randint, random
 from functools import partial
+from kivy.uix.button import Button
+from kivy.uix.image import Image
+from kivy.core.window import Window
 
 
 class Puzzle(Camera):
@@ -44,7 +46,7 @@ class Puzzle(Camera):
                 bx = x * bs
                 by = y * bs
                 subtexture = texture.get_region(bx, by, bs, bs)
-                #node = PuzzleNode(texture=subtexture,
+                # node = PuzzleNode(texture=subtexture,
                 #                  size=(bs, bs), pos=(bx, by))
                 node = Scatter(pos=(bx, by), size=(bs, bs))
                 with node.canvas:
@@ -66,8 +68,8 @@ class Puzzle(Camera):
             x = bs * (index % int(tw / bs))
             y = bs * int(index / int(tw / bs))
             child = self.children[childindex]
-            a = Animation(d=random() / 4.) + Animation(pos=(x, y),
-                                                       t='out_quad', d=.4)
+            a = Animation(d=random() / 4.) + Animation(pos=(
+                x, y), t='out_quad', d=.4)
             a.start(child)
             childindex += 1
 
@@ -79,19 +81,47 @@ class Puzzle(Camera):
 
 
 class PuzzleApp(App):
-    def build(self):
-        root = Widget()
-        puzzle = Puzzle(resolution=(640, 480), play=True)
-        slider = Slider(min=100, max=200, step=10, size=(800, 50))
-        slider.bind(value=partial(self.on_value, puzzle))
 
-        root.add_widget(puzzle)
-        root.add_widget(slider)
-        return root
+	def __init__(self, **kwargs):
+		super(PuzzleApp, self).__init__(**kwargs)
+		self.start_game = False
+		self.content = Widget()
 
-    def on_value(self, puzzle, instance, value):
-        value = int((value + 5) / 10) * 10
-        puzzle.blocksize = value
-        instance.value = value
+	def build(self):
+		root = Widget()
+		button_start_game = Button(text='Start Game',pos=(400, 300))
+		button_start_game.bind(on_press=self.start)
+		button_options = Button(text='Options',pos=(400, 200))
+		button_quit = Button(text='Quit',pos=(400, 100))
+		self.background = Image(source = 'assets/menu_background.jpg')
+		self.background.size = (640,480)
+
+		self.background.opacity = 0.35
+		self.content.add_widget(self.background)
+		self.content.add_widget(button_start_game)
+		self.content.add_widget(button_options)
+		self.content.add_widget(button_quit)
+		return self.content
+
+	def on_value(self, puzzle, instance, value):
+		value = int((value + 5) / 10) * 10
+		puzzle.blocksize = value
+		instance.value = value
+
+	def start(self, value):
+		print("Start Game")
+		self.content.clear_widgets()
+		puzzle = Puzzle(resolution=(640, 480), play=True)
+		slider = Slider(min=100, max=200, step=10, size=(800, 50))
+		slider.bind(value=partial(self.on_value, puzzle))
+		self.content.add_widget(puzzle)
+		self.content.add_widget(slider)
+
+	def options(self):
+		self.start_game = True
+
+	def quit(self):
+		self.start_game = True
+
 
 PuzzleApp().run()
