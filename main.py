@@ -89,18 +89,26 @@ class PuzzleApp(App):
 
 	def build(self):
 		root = Widget()
-		button_start_game = Button(text='Start Game',pos=(400, 300))
-		button_start_game.bind(on_press=self.start)
-		button_options = Button(text='Options',pos=(400, 200))
-		button_quit = Button(text='Quit',pos=(400, 100))
-		self.background = Image(source = 'assets/menu_background.jpg')
-		self.background.size = (640,480)
+		center_x = Window.width/2
+		center_y = Window.height/2
+		button_start_game = Button(text='Start Game',pos=(center_x-100, center_y+100),size=(200, 100))
+		button_options = Button(text='Options',pos=(center_x-100, center_y),size=(200, 100))
+		button_quit = Button(text='Quit',pos=(center_x-100, center_y-100),size=(200, 100))
 
-		self.background.opacity = 0.35
+		button_start_game.bind(on_press=self.start)
+		#button_options.bind(on_press=self.options)
+		button_quit.bind(on_press=self.quit)
+
+		self.background = Image(source = 'assets/menu_background.jpg')
+		self.background.size = (Window.width,Window.height)
+
+		self.backgroundopacity = 0.35
 		self.content.add_widget(self.background)
+
 		self.content.add_widget(button_start_game)
 		self.content.add_widget(button_options)
 		self.content.add_widget(button_quit)
+
 		return self.content
 
 	def on_value(self, puzzle, instance, value):
@@ -117,11 +125,11 @@ class PuzzleApp(App):
 		self.content.add_widget(puzzle)
 		self.content.add_widget(slider)
 
-	def options(self):
-		self.start_game = True
+	def options(self,value):
+		print(value)
 
-	def quit(self):
-		self.start_game = True
+	def quit(self,value):
+		PuzzleApp().get_running_app().stop()
 
 
 PuzzleApp().run()
