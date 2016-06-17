@@ -22,6 +22,7 @@ from functools import partial
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.core.window import Window
+from kivy.core.audio import SoundLoader
 
 
 class Puzzle(Camera):
@@ -85,6 +86,8 @@ class PuzzleApp(App):
 	def __init__(self, **kwargs):
 		super(PuzzleApp, self).__init__(**kwargs)
 		self.start_game = False
+		self.background_sound = SoundLoader.load('assets/audio/music.ogg')
+		self.background_sound.loop = True
 		self.content = Widget()
 
 	def build(self):
@@ -118,6 +121,7 @@ class PuzzleApp(App):
 
 	def start(self, value):
 		print("Start Game")
+		self.background_sound.play()
 		self.content.clear_widgets()
 		puzzle = Puzzle(resolution=(640, 480), play=True)
 		slider = Slider(min=100, max=200, step=10, size=(800, 50))
